@@ -36,22 +36,22 @@ public class Percolation {
             return;
 
         if (row > 1 && isOpen(row-1, col))
-            uf.union((N*(col-1))+row-1, (N*(col-1))+row-2);
+            uf.union((N*(row-1))+col-1, (N*(row-2))+col-1);
 
         if (row < N && isOpen(row+1, col))
-            uf.union((N*(col-1))+row-1, (N*(col-1))+row);
+            uf.union((N*(row))+col-1, (N*(row-1))+col-1);
 
         if (col > 1 && isOpen(row, col-1))
-            uf.union((N*(col-1))+row, (N*(col-2))+row);
+            uf.union((N*(row-1))+col-1, (N*(row-1))+col-2);
 
         if (col < N && isOpen(row, col+1))
-            uf.union((N*(col-1))+row, (N*col)+row);
+            uf.union((N*(row-1))+col-1, (N*(row-1))+col);
 
         //Union virtual vertex
-        if (col == 1)
-            uf.union(0, (N*(col-1))+row-1);
-        else if (col == N)
-            uf.union((N*N+1), (N*(col-1))+row-1);
+        if (row == 1)
+            uf.union(0, (N*(row-1))+col-1);
+        else if (row == N)
+            uf.union((N*N+1), (N*(row-1))+col-1);
 
         sites[row-1][col-1] = 1;
     }
