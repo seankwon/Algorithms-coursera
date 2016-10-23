@@ -1,122 +1,64 @@
-package week1;
-import edu.princeton.cs.algs4.StdRandom;
-import edu.princeton.cs.algs4.StdStats;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 import java.util.Arrays;
 
 public class Percolation {
-    WeightedQuickUnionUF uf;
-    public int[][] sites;
-    public int N;
+    private WeightedQuickUnionUF uf;
+    private int[][] sites;
+    private int n;
 
     public Percolation(int n) {
-        this.N = n;
+        if (n <= 0)
+            throw new IllegalArgumentException();
+        this.n = n;
         this.uf = new WeightedQuickUnionUF(n*n+2);
         this.sites = new int[n][n];
         for (int[] a : sites) Arrays.fill(a, 0);
     }
 
     public boolean isOpen(int row, int col) {
-        if (row < 1 || row > N || col < 1 || col > N)
+        if (row < 1 || row > n || col < 1 || col > n)
             throw new IllegalArgumentException();
         return sites[row-1][col-1] == 1;
     }
 
     public boolean isFull(int row, int col) {
-        if (row < 1 || row > N || col < 1 || col > N)
+        if (0 < row && row <= n && 0 < col && col <= n)
+            return uf.connected(0, (n*(row-1))+col);
+        else
             throw new IllegalArgumentException();
-        return uf.connected(0, (N*col-1)+row-1 );
     }
 
     public void open(int row, int col) {
-        if (row < 1 || row > N || col < 1 || col > N)
+        if (row < 1 || row > n || col < 1 || col > n)
             throw new IllegalArgumentException();
 
         if (isOpen(row, col))
             return;
 
         if (row > 1 && isOpen(row-1, col))
-            uf.union((N*(row-1))+col-1, (N*(row-2))+col-1);
+            uf.union((n*(row-1))+col, (n*(row-2))+col);
 
-        if (row < N && isOpen(row+1, col))
-            uf.union((N*(row))+col-1, (N*(row-1))+col-1);
+        if (row < n && isOpen(row+1, col))
+            uf.union((n*(row-1))+col, (n*(row))+col);
 
         if (col > 1 && isOpen(row, col-1))
-            uf.union((N*(row-1))+col-1, (N*(row-1))+col-2);
+            uf.union((n*(row-1))+col, (n*(row-1))+col-1);
 
-        if (col < N && isOpen(row, col+1))
-            uf.union((N*(row-1))+col-1, (N*(row-1))+col);
+        if (col < n && isOpen(row, col+1))
+            uf.union((n*(row-1))+col, (n*(row-1))+col+1);
 
         //Union virtual vertex
         if (row == 1)
-            uf.union(0, (N*(row-1))+col-1);
-        else if (row == N)
-            uf.union((N*N+1), (N*(row-1))+col-1);
+            uf.union(0, (n*(row-1))+col);
+        else if (row == n)
+            uf.union((n*n+1), (n*(row-1))+col);
 
         sites[row-1][col-1] = 1;
     }
 
 
     public boolean percolates() {
-        return uf.connected(0, (N*N)+1);
+        return uf.connected(0, (n*n)+1);
     }
 
-    public static void main(String[] args) {
-        Percolation t = new Percolation(4);
-
-        if (!t.percolates())
-            System.out.println("Test 0 Pass");
-
-        Percolation p = new Percolation(3);
-        p.open(1, 1);
-
-        if (p.isOpen(1, 1))
-            System.out.println("Test 1 Pass");
-
-        if (!p.isFull(1,1))
-            System.out.println("Test 2 Pass");
-
-        p.open(1, 2);
-        p.open(1, 3);
-
-        if (p.percolates())
-            System.out.println("Test 3 Pass");
-
-        Percolation v = new Percolation(4);
-        v.open(2, 1);
-        v.open(2, 2);
-        v.open(3, 2);
-        v.open(3, 3);
-        v.open(4, 3);
-        v.open(4, 4);
-        if (v.percolates())
-            System.out.println("Test 4 Pass");
-
-        Percolation w = new Percolation(2);
-        w.open(2, 1);
-        w.open(2, 2);
-
-        if (w.percolates())
-            System.out.println("Test 5 Pass");
-
-        Percolation y = new Percolation(5);
-        y.open(5, 1);
-        y.open(5, 2);
-        y.open(4, 2);
-        y.open(3, 2);
-        y.open(2, 2);
-        y.open(2, 3);
-        y.open(1, 3);
-
-        if (!y.percolates())
-            System.out.println("Test 6 Pass");
-
-        y.open(1, 4);
-        y.open(2, 4);
-        y.open(3, 4);
-        y.open(3, 5);
-
-        if (y.percolates())
-            System.out.println("Test 7 Pass");
-    }
 }

@@ -1,8 +1,5 @@
-package week1;
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
-import edu.princeton.cs.algs4.WeightedQuickUnionUF;
-import week1.Percolation;
 
 public class PercolationStats {
     private double[] probabilities;
@@ -24,7 +21,7 @@ public class PercolationStats {
         for (int i = 0; i < trials; i++) {
             numOpen = 0;
             p = new Percolation(n);
-            while(!p.percolates()) {
+            while (!p.percolates()) {
                 //get random nums
                 chooseRow = StdRandom.uniform(1, 1+n);
                 chooseCol = StdRandom.uniform(1, 1+n);
@@ -36,8 +33,7 @@ public class PercolationStats {
 
 
             //push probability
-            probabilities[i] = ((double)numOpen / (n*n));
-            System.out.println(probabilities[i]);
+            probabilities[i] = ((double) numOpen / (n*n));
 
             //reset variables
         }
@@ -52,17 +48,20 @@ public class PercolationStats {
     }
 
     public double confidenceLo() {
-        return (mean()) - ( (1.96 * stddev()) / Math.sqrt(trials) );
+        return (mean()) - ((1.96 * stddev()) / Math.sqrt(trials));
     }
 
     public double confidenceHi() {
-        return (mean()) + ( (1.96 * stddev()) / Math.sqrt(trials) );
+        return (mean()) + ((1.96 * stddev()) / Math.sqrt(trials));
     }
 
     public static void main(String[] args) {
-        PercolationStats ps = new PercolationStats(200, 100);
-        System.out.println("mean = " + ps.mean());
-        System.out.println("stddev = " + ps.stddev());
-        System.out.println("95% confidence interval = " + ps.confidenceLo() + ", " + ps.confidenceHi());
+        int n = Integer.parseInt(args[0]);
+        int t = Integer.parseInt(args[1]);
+        PercolationStats ps = new PercolationStats(n, t);
+        String con = ps.confidenceLo() + ", " + ps.confidenceHi();
+        System.out.println("mean                    = " + ps.mean());
+        System.out.println("stddev                  = " + ps.stddev());
+        System.out.println("95% confidence interval = " + con);
     }
 }
