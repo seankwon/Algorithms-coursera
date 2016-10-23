@@ -16,18 +16,19 @@ public class PercolationStats {
         this.trials = trials;
         this.n = n;
         probabilities = new double[trials];
-        p = new Percolation(n);
         int numOpen = 0;
         int chooseRow = 0;
         int chooseCol = 0;
 
         //start trials
         for (int i = 0; i < trials; i++) {
+            numOpen = 0;
+            p = new Percolation(n);
             while(!p.percolates()) {
                 //get random nums
                 chooseRow = StdRandom.uniform(1, 1+n);
                 chooseCol = StdRandom.uniform(1, 1+n);
-                if (p.isFull(chooseRow, chooseCol)) {
+                if (!p.isOpen(chooseRow, chooseCol)) {
                     numOpen += 1;
                     p.open(chooseRow, chooseCol);
                 }
@@ -35,12 +36,10 @@ public class PercolationStats {
 
 
             //push probability
-            probabilities[i] = (numOpen / (double)(n*n));
+            probabilities[i] = ((double)numOpen / (n*n));
             System.out.println(probabilities[i]);
 
             //reset variables
-            numOpen = 0;
-            p = new Percolation(n);
         }
     }
 

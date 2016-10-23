@@ -25,7 +25,7 @@ public class Percolation {
     public boolean isFull(int row, int col) {
         if (row < 1 || row > N || col < 1 || col > N)
             throw new IllegalArgumentException();
-        return !isOpen(row, col);
+        return uf.connected(0, (N*col-1)+row-1 );
     }
 
     public void open(int row, int col) {
@@ -35,21 +35,21 @@ public class Percolation {
         if (isOpen(row, col))
             return;
 
-        if (row != 1)
+        if (row > 1 && isOpen(row-1, col))
             uf.union((N*(col-1))+row-1, (N*(col-1))+row-2);
 
-        if (row != N)
+        if (row < N && isOpen(row+1, col))
             uf.union((N*(col-1))+row-1, (N*(col-1))+row);
 
-        if (col != 1)
+        if (col > 1 && isOpen(row, col-1))
             uf.union((N*(col-1))+row, (N*(col-2))+row);
 
-        if (col != N)
+        if (col < N && isOpen(row, col+1))
             uf.union((N*(col-1))+row, (N*col)+row);
 
         //Union virtual vertex
         if (col == 1)
-            uf.union(0, (N*col)+row);
+            uf.union(0, (N*(col-1))+row-1);
         else if (col == N)
             uf.union((N*N+1), (N*(col-1))+row-1);
 
@@ -58,7 +58,7 @@ public class Percolation {
 
 
     public boolean percolates() {
-        return uf.find(0) == uf.find((N*N)+1);
+        return uf.connected(0, (N*N)+1);
     }
 
     public static void main(String[] args) {
