@@ -47,10 +47,10 @@ public class Percolation {
         if (col < n && isOpen(row, col+1))
             uf.union((n*(row-1))+col, (n*(row-1))+col+1);
 
-        //Union virtual vertex
         if (row == 1)
             uf.union(0, (n*(row-1))+col);
-        else if (row == n)
+
+        if (row == n)
             uf.union((n*n+1), (n*(row-1))+col);
 
         sites[row-1][col-1] = 1;
@@ -59,6 +59,13 @@ public class Percolation {
 
     public boolean percolates() {
         return uf.connected(0, (n*n)+1);
+    }
+
+    public static void main(String[] args) {
+        Percolation p = new Percolation(1);
+        System.out.println(p.isOpen(1, 1));
+        p.open(1, 1);
+        System.out.println(p.percolates());
     }
 
 }

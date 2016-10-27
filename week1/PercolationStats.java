@@ -9,7 +9,6 @@ public class PercolationStats {
     public PercolationStats(int n, int trials) {
         if (n <= 0 || trials <= 0) throw new IllegalArgumentException();
 
-        //Initialize all necessary variables
         this.trials = trials;
         this.n = n;
         probabilities = new double[trials];
@@ -17,12 +16,10 @@ public class PercolationStats {
         int chooseRow = 0;
         int chooseCol = 0;
 
-        //start trials
         for (int i = 0; i < trials; i++) {
             numOpen = 0;
             p = new Percolation(n);
             while (!p.percolates()) {
-                //get random nums
                 chooseRow = StdRandom.uniform(1, 1+n);
                 chooseCol = StdRandom.uniform(1, 1+n);
                 if (!p.isOpen(chooseRow, chooseCol)) {
@@ -32,10 +29,8 @@ public class PercolationStats {
             }
 
 
-            //push probability
             probabilities[i] = ((double) numOpen / (n*n));
 
-            //reset variables
         }
     }
 
