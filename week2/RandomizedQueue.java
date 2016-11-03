@@ -1,5 +1,6 @@
 import edu.princeton.cs.algs4.StdRandom;
-public class RandomizedQueue<Item> /*implements Iterable<Item>*/ {
+import java.util.Iterator;
+public class RandomizedQueue<Item> implements Iterable<Item> {
    private int size;
    private Item[] items;
    private int N;
@@ -21,7 +22,7 @@ public class RandomizedQueue<Item> /*implements Iterable<Item>*/ {
        if (isEmpty()) {
            resize(1);
        } else if (N >= items.length) {
-           resize(size * 2);
+           resize(items.length * 2);
        }
 
        items[N] = item;
@@ -36,31 +37,52 @@ public class RandomizedQueue<Item> /*implements Iterable<Item>*/ {
        if (items[idx] == null) return sample();
        else return items[idx];
    }
+
    public Item dequeue() {
        if (isEmpty()) throw new java.util.NoSuchElementException();
        int idx = StdRandom.uniform(N);
        Item res = items[idx];
 
-       if (res != null) {
-           items[idx] = null;
-           size--;
+       if (res == null) res = dequeue();
 
-           if (size > 4 && size <= items.length / 4) {
-               resize(items.length / 4);
-           }
-       } else {
-           res = dequeue();
+       if (idx < N-1) {
+           Item lastItem = items[N-1];
+           items[idx] = lastItem;
        }
+
+       items[N-1] = null;
+       N--;
+       size--;
+
+       if (size > 4 && size < items.length / 4) resize(items.length / 4);
+
        return res;
    }
-   /*
+
    public Iterator<Item> iterator() {
        return new QueueIterator();
    }
+
    private class QueueIterator implements Iterator<Item> {
+       private int step = 0;
+       public QueueIterator() {
+           StdRandom.shuffle(items, 0, N);
+       }
+
+       public boolean hasNext() {
+           return items[step] != null;
+       }
+
+       public void remove() { return; }
+
+       public Item next() {
+           Item item = items[step];
+           step++;
+           return item;
+       }
 
    }
-   */
+
    private void resize(int n) {
        Item[] newitems;
        if (n == 1 || isEmpty()) {
@@ -89,43 +111,4 @@ public class RandomizedQueue<Item> /*implements Iterable<Item>*/ {
        return (N == items.length || size <= N / 2);
    }
 
-   public static void main(String[] args) {
-       RandomizedQueue<Integer> i = new RandomizedQueue<Integer>();
-       i.enqueue(1);
-
-       if (i.sample() == 1)
-           System.out.println("1. enqueue test passed");
-
-       i = new RandomizedQueue<Integer>();
-       i.enqueue(1);
-       i.dequeue();
-       i.enqueue(2);
-       i.enqueue(2);
-       i.dequeue();
-       i.dequeue();
-       i.enqueue(2);
-       i.enqueue(2);
-       i.enqueue(2);
-       i.dequeue();
-       i.dequeue();
-       i.dequeue();
-       i.enqueue(3);
-       i.enqueue(3);
-       i.enqueue(3);
-       i.dequeue();
-       i.dequeue();
-       i.dequeue();
-       i.enqueue(3);
-       i.dequeue();
-       i.enqueue(3);
-       i.enqueue(3);
-       i.dequeue();
-       i.dequeue();
-       i.dequeue();
-       i.enqueue(3);
-       i.enqueue(3);
-       System.out.println(i.isEmpty());
-       System.out.println(i.size());
-
-   }
 }
