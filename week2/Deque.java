@@ -3,15 +3,32 @@ import java.util.Iterator;
 
 public class Deque<Item> implements Iterable<Item> {
     private class Node<Item> {
-        public Item item;
-        public Node<Item> next;
-        public Node<Item> prev;
+        private Item item;
+        private Node<Item> next;
+        private Node<Item> prev;
 
-        public Node() { }
+        public Node<Item> getNext() {
+            return next;
+        }
+        public Node<Item> getPrev() {
+            return prev;
+        }
+        public Item getItem() {
+            return item;
+        }
+        public void setNext(Node<Item> n) {
+            this.next = n;
+        }
+        public void setPrev(Node<Item> n) {
+            this.prev = n;
+        }
+        public void setItem(Item i) {
+            this.item = i;
+        }
     }
 
-    public int size = 0;
-    public Node<Item> head;
+    private int size = 0;
+    private Node<Item> head;
     private Node<Item> tail;
 
     public Deque() {
@@ -30,14 +47,14 @@ public class Deque<Item> implements Iterable<Item> {
 
         Node<Item> oldhead = head;
         head = new Node<Item>();
-        head.item = item;
-        head.next = oldhead;
-        head.prev = null;
+        head.setItem(item);
+        head.setNext(oldhead);
+        head.setPrev(null);
 
         if (isEmpty()) {
             tail = head;
         } else {
-            oldhead.prev = head;
+            oldhead.setPrev(head);
         }
         size += 1;
 
@@ -48,14 +65,14 @@ public class Deque<Item> implements Iterable<Item> {
 
         Node<Item> oldTail = tail;
         tail = new Node<Item>();
-        tail.item = item;
-        tail.next = null;
+        tail.setItem(item);
+        tail.setNext(null);
 
         if (isEmpty()) {
             head = tail;
         } else {
-            oldTail.next = tail;
-            tail.prev = oldTail;
+            oldTail.setNext(tail);
+            tail.setPrev(oldTail);
         }
 
         size += 1;
@@ -64,8 +81,8 @@ public class Deque<Item> implements Iterable<Item> {
 
     public Item removeFirst() {
         if (isEmpty()) throw new NoSuchElementException();
-        Item item = head.item;
-        head = head.next;
+        Item item = head.getItem();
+        head = head.getNext();
         size -= 1;
 
         if (isEmpty()) tail = null;
@@ -74,14 +91,14 @@ public class Deque<Item> implements Iterable<Item> {
 
     public Item removeLast() {
         if (isEmpty()) throw new NoSuchElementException();
-        Item item = tail.item;
+        Item item = tail.getItem();
 
         Node<Item> oldTail = tail;
-        tail = tail.prev;
+        tail = tail.getPrev();
         oldTail = null;
 
         size -= 1;
-        if (!isEmpty()) tail.next = null;
+        if (!isEmpty()) tail.setNext(null);
         else            head = null;
 
         return item;
@@ -100,8 +117,8 @@ public class Deque<Item> implements Iterable<Item> {
             return;
         }
         public Item next() {
-            Item item = current.item;
-            current = current.next;
+            Item item = current.getItem();
+            current = current.getNext();
             return item;
         }
     }
