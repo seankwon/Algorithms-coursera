@@ -114,9 +114,11 @@ public class Deque<Item> implements Iterable<Item> {
             return current != null;
         }
         public void remove() {
-            return;
+            throw new UnsupportedOperationException();
         }
         public Item next() {
+            if (isEmpty()) throw new java.util.NoSuchElementException();
+
             Item item = current.getItem();
             current = current.getNext();
             return item;

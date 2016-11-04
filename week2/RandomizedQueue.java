@@ -45,12 +45,13 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
        if (res == null) res = dequeue();
 
-       if (idx < N-1) {
-           Item lastItem = items[N-1];
-           items[idx] = lastItem;
+       if (idx == N-1) {
+           items[idx] = null;
+       } else {
+           items[idx] = items[N-1];
+           items[N-1] = null;
        }
 
-       items[N-1] = null;
        N--;
        size--;
 
@@ -66,16 +67,20 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
    private class QueueIterator implements Iterator<Item> {
        private int step = 0;
        public QueueIterator() {
-           StdRandom.shuffle(items, 0, N);
+           if (!isEmpty())
+               StdRandom.shuffle(items, 0, N-1);
        }
 
        public boolean hasNext() {
-           return items[step] != null;
+           return step < items.length && items[step] != null;
        }
 
-       public void remove() { return; }
+       public void remove() {
+           throw new UnsupportedOperationException();
+       }
 
        public Item next() {
+           if (isEmpty()) throw new java.util.NoSuchElementException();
            Item item = items[step];
            step++;
            return item;
@@ -87,7 +92,6 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
        Item[] newitems;
        if (n == 1 || isEmpty()) {
            items = (Item[]) new Object[1];
-           size = items.length;
        } else {
            newitems = (Item[]) new Object[n];
            addToNewListAndSet(newitems);
@@ -103,7 +107,6 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
            }
        }
        N = count;
-       size = count;
        items = newitems;
    }
 
@@ -111,4 +114,18 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
        return (N == items.length || size <= N / 2);
    }
 
+   public static void main(String[] args) {
+       RandomizedQueue<Integer> r = new RandomizedQueue<Integer>();
+       r.enqueue(1);
+       r.enqueue(2);
+       r.enqueue(3);
+       r.enqueue(4);
+       r.enqueue(4);
+       r.enqueue(4);
+       r.enqueue(4);
+       r.enqueue(4);
+       r.enqueue(3);
+       for (Integer i : r)
+           System.out.println(i);
+   }
 }
